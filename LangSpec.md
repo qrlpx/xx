@@ -79,7 +79,7 @@ For how this tree is build, see Operator Precedence.
 
 | Name | Syntax | Description
 |--|--|--
-| NsAccess | `x:y` | Accesses `y` in namespace `x`... If `x` is a record instance, desugars to `(|...| X:y(x, ...))`... TODO
+| NsAccess | `x:y` | Accesses `y` in namespace `x`... If `x` is a record instance, desugars to `(func(...) X:y(x, ...))`... TODO
 | RecAccess | `x.y` | Accesses `x` in record `x`... TODO
 | Mul | `x * y` | Multiples `x` with `y`.
 | Div | `x / y` | Divides `x` by `y`.
