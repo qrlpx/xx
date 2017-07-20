@@ -1,0 +1,39 @@
+ident : /[a-zA-Z_][a-zA-Z0-9_]+/;
+
+int_radix : ("0x" | "0o" | "0b")?;
+int_digits : /[a-fA-F0-9_]+/;
+int_ty : ("i8" | "i16" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64")?;
+int: <int_radix> <int_digits> <int_ty>;
+
+float_digits : /[0-9]+/ '.' /[0-9]+/;
+float_ty : ("f32" | "f64")?;
+float : <float_digits> <float_ty>;
+
+num_sign : '-'?;
+num : <num_sign> <int>;
+
+lit : <ident> | <num> | "true" | "false" | "void";
+
+wsp : /[ \t\r\n]*/;
+wsp1 : /[ \t\r\n]+/;
+
+expr1 : '(' <expr> ')' | <lit>;
+expr2 : <expr1> (<wsp> (':' <wsp> <ident>) | ('[' <wsp> <expr> (<wsp> ',' <wsp> <expr>)* <wsp> ']'))*;
+expr3 : <expr2> (<wsp> '(' <wsp> (<expr>)? (<wsp> ',' <wsp> <expr>)* <wsp> ')')?;
+expr4 : (('&' | '*' | '-' | '!') <wsp>)? <expr3>;
+expr5 : <expr4>;
+expr6 : (<expr5> <wsp> ('*' | '/' | '%') <wsp>)? <expr5>;
+expr7 : (<expr6> <wsp> ('+' | '-') <wsp>)? <expr6>;
+expr8 : (<expr7> <wsp> ("<<" | ">>") <wsp>)? <expr7>;
+expr9 : (<expr8> <wsp> ('&' | '|' | '^') <wsp>)? <expr8>;
+expr10 : (<expr9> <wsp> ("==" | "!=" | "<=" | ">=" | '<' | '>') <wsp>)? <expr9>;
+expr11 : (<expr10> <wsp> ("&&" | "||") <wsp>)? <expr10>;
+expr : <expr11>;
+
+stmnt_expr : <expr> <wsp> ';';
+stmnt_declare : "var" <wsp1> <ident> <wsp1> <expr> (<wsp> ',' <wsp> <ident> <wsp1> <expr>)* <wsp> ';';
+stmnt_define : <ident> <wsp1> <expr> (<wsp> ',' <wsp> <ident> <wsp1> <expr>)* <wsp> ":=" <wsp> <expr> (<wsp> ',' <wsp> <expr>) <wsp> ';';
+stmnt_assign : <expr> (<wsp> ',' <wsp> <expr>) <wsp> '=' <wsp> <expr> (<wsp> ',' <wsp> <expr>) <wsp> ';';
+stmnt_return : "return" <wsp1> <expr> <wsp> ';';
+stmnt_block : '{' <wsp> (<stmnt> <wsp>)* '}';
+stmnt : <stmnt_expr> | <stmnt_declare> | <stmnt_define> | <stmnt_assign> | <stmnt_return> | <stmnt_block>;
